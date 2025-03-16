@@ -7,6 +7,7 @@ type ModalProps = {
   onClose: () => void
   children: ReactNode
 }
+
 export default function Modal({ isOpen, onClose, children }: ModalProps) {
   return (
     <div
