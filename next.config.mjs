@@ -1,18 +1,7 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
     BUILD_ENV: process.env.BUILD_ENV || "test",
   },
-  // reactStrictMode: true,
-  // async redirects() {
-  //   return [
-  //     {
-  //       source: "/",
-  //       destination: "/",
-  //       permanent: true,
-  //     },
-  //   ];
-  // },
   webpack: (config) => {
     const fileLoaderRule = config.module.rules.find((rule) =>
       rule.test?.test?.(".svg")
