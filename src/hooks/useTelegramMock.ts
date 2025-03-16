@@ -5,9 +5,7 @@ import {
   retrieveLaunchParams,
 } from "@telegram-apps/sdk-react"
 
-/**
- * Mocks Telegram environment in development mode.
- */
+
 export function useTelegramMock(): void {
   useClientOnce(() => {
     // It is important, to mock the environment only for development purposes. When building the
