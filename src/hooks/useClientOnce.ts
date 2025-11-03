@@ -1,6 +1,7 @@
 import { useRef } from "react"
 
 // useClientOnce hooks
+
 export function useClientOnce(fn: () => void): void {
   const canCall = useRef(true)
   if (typeof window !== "undefined" && canCall.current) {
