@@ -8,6 +8,10 @@
 # testing
 /coverage
 
+# Next.js and TypeScript build artifacts
+/.next/
+*.tsbuildinfo
+
 # production
 /build
 
