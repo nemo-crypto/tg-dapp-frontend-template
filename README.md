@@ -1,38 +1,53 @@
-# Telegram-DAPP
+# Telegram Mini App + TON 前端模板
 
-## Install Dependencies
+使用 Next.js 14.2.4、React、Telegram Apps SDK、Telegram UI、NextUI 与 TonConnect 的移动活动前端。页面包含首页、每日活动、游戏、历史、邀请、任务和排行榜。
+
+## 功能与目录
+
+| 模块 | 入口 | 说明 |
+|---|---|---|
+| 应用路由 | `src/app/` | 活动页面与共享布局 |
+| 宿主与主题 | [Root.tsx](src/components/Root/Root.tsx) | Telegram SDK、主题、视口及UI Provider |
+| 会话 | [useSession.ts](src/hooks/useSession.ts) | 读取Telegram启动数据、用户标识与邀请参数 |
+| 开发模拟 | [useTelegramMock.ts](src/hooks/useTelegramMock.ts) | 普通浏览器中的Telegram环境模拟 |
+| 业务请求 | `src/utils/fetch/` | 客户端请求、接口与会话适配 |
+| 钱包元数据 | [tonconnect-manifest.json](public/tonconnect-manifest.json) | 应用名称、图标与站点信息 |
+
+## 环境与运行
+
+包管理器声明为pnpm 9.7.0，使用仓库pnpm-lock.yaml。未声明Node engines，需要结合锁定的Next版本确认运行环境。
+
 ```bash
-pnpm install
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
-## Run
+默认开发端口3000。需要HTTPS开发模式时：
 
 ```bash
-pnpm run dev
+pnpm dev:https
 ```
 
+HTTPS开发涉及本机证书环境，不能替代Telegram内真实启动参数验证。
+
 ```bash
-pnpm run build
-pnpm run start
+pnpm build
+pnpm start
+pnpm lint
 ```
 
-## NextUI 
-```bash
-@nextui-org/react
-https://nextui.org/docs/guide/introduction
-```
+生产start依赖先完成build。当前没有独立测试脚本。
 
-## Animate.css  【Basic initialization animation】
-```bash
-https://animate.style/
-```
+## 配置与真实业务依赖
 
-## dayjs 【Date formatting】
-```bash
-https://www.npmjs.com/package/dayjs
-```
+[next.config.mjs](next.config.mjs) 将BUILD_ENV默认设置为test，真实地址和请求逻辑位于 `src/utils/fetch/`。首页包含登录与Token刷新相关逻辑，需要配套业务接口；本目录没有提供完整的登录和活动服务端。
 
-## react-id-swiper
-```bash
-https://react-id-swiper.ashernguyen.site/example/default
-```
+本地Telegram mock只便于页面开发，不是服务端可接受的身份验证依据。真实接入需由后端核实Telegram原始启动数据，再管理业务会话。
+
+部署时核对TonConnect manifest中的站点和图标、钱包网络、机器人Mini App入口及后端地址。Next配置使用 `@svgr/webpack`，但当前package.json未直接声明该依赖，构建环境需要先解决此配置与依赖缺口。
+
+## 开发与验收
+
+页面放在App Router中，公共界面放components，宿主交互封装在hooks和Root。验收分别覆盖浏览器开发模拟、Telegram真实客户端、业务登录、钱包连接、路由和错误状态。
+
+本轮只做源码和配置核对，未安装依赖、连接机器人、验证远端后端或发起链上交易。原README所列动画、日期与轮播依赖仍可从package.json追踪，实际接入以代码为准。
