@@ -4,7 +4,11 @@
 
 Use the pnpm version pinned in `package.json` (9.7.0).
 
-Create `.env.local` in the project root and configure the features you intend to use:
+Copy the environment template, then configure the features you intend to use:
+
+```bash
+cp .env.example .env.local
+```
 
 | Variable | Used for |
 | --- | --- |
