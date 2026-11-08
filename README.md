@@ -18,6 +18,7 @@
 包管理器声明为pnpm 9.7.0，使用仓库pnpm-lock.yaml。未声明Node engines，需要结合锁定的Next版本确认运行环境。
 
 ```bash
+cp .env.example .env.local
 pnpm install --frozen-lockfile
 pnpm dev
 ```
@@ -45,6 +46,22 @@ pnpm lint
 本地Telegram mock只便于页面开发，不是服务端可接受的身份验证依据。真实接入需由后端核实Telegram原始启动数据，再管理业务会话。
 
 部署时核对TonConnect manifest中的站点和图标、钱包网络、机器人Mini App入口及后端地址。Next配置使用 `@svgr/webpack`，但当前package.json未直接声明该依赖，构建环境需要先解决此配置与依赖缺口。
+
+## 环境模板与Telegram运行模式
+
+远程更新提供了 [.env.example](.env.example)，本地复制为.env.local后按实际业务配置；.env.local由Git忽略。
+
+| 变量 | 作用 |
+|---|---|
+| NEXT_PUBLIC_API_URL | Next.js API代理使用的业务后端地址 |
+| NEXT_PUBLIC_AES_KEY | 客户端encrypt辅助方法所需的十六进制参数 |
+| NEXT_PUBLIC_SIG_KEY | 客户端signParams辅助方法使用的签名后缀 |
+| NEXT_PUBLIC_TMA_URL | 邀请分享的Telegram Mini App入口 |
+| NEXT_PUBLIC_SHARE_MSG | Telegram分享文案 |
+
+这些NEXT_PUBLIC变量会进入浏览器代码，不能作为仅服务端可见的秘密；修改客户端构建期变量后需重新构建，取值应与后端和Mini App配置匹配。
+
+开发模式启用Telegram mock以便普通浏览器预览，但不会提供可用业务后端。生产build/start不启用该mock，需要在Telegram中携带有效启动参数访问；直接从普通浏览器打开生产包可能在SDK初始化阶段失败。Telegram内验证还需配置客户端可访问的部署地址。
 
 ## 开发与验收
 
