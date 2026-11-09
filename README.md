@@ -2,6 +2,18 @@
 
 使用 Next.js 14.2.4、React、Telegram Apps SDK、Telegram UI、NextUI 与 TonConnect 的移动活动前端。页面包含首页、每日活动、游戏、历史、邀请、任务和排行榜。
 
+<!-- BEGIN project-discovery -->
+## 项目定位与实践入口
+
+Telegram Mini App frontend template with Next.js, React, TON Connect and Telegram SDK. Telegram 小程序 / TON DApp 前端：钱包连接、任务、邀请与排行榜，需配套业务后端。
+
+适合从以下入口阅读实现与接入条件：
+
+- [宿主与主题集成](src/components/Root/Root.tsx)
+- [Telegram 会话](src/hooks/useSession.ts)
+- [钱包元数据](public/tonconnect-manifest.json)
+<!-- END project-discovery -->
+
 ## 功能与目录
 
 | 模块 | 入口 | 说明 |
