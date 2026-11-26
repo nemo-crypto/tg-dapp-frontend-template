@@ -31,3 +31,12 @@ test('GET and HEAD RPC calls send their envelopes over POST', async t => {
     assert.deepEqual(request.body, {id: 0, jsonrpc: '2.0', method: 'list_items', params: {page: 2}});
   }
 });
+
+test('RPC transport preserves falsy parameters and the remote method name', async t => {
+  const received = await endpoint(t);
+  for (const data of [0, false, '']) {
+    assert.equal((await fetcher.request('PATCH', 'set_preference', data, '')).status, 200);
+  }
+  assert.deepEqual(received.map(request => request.body.params), [0, false, '']);
+  assert.ok(received.every(request => request.method === 'POST' && request.body.method === 'set_preference'));
+});
