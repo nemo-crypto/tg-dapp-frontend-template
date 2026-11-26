@@ -20,3 +20,10 @@ test('structured API errors without a result are returned intact', async t => {
   const response = await fetcher.get('items');
   assert.equal(response.json.err, 'RequestInvalid');
 });
+
+test('malformed token refresh responses do not crash the original request', async t => {
+  browser(t, [JSON.stringify({result: {code: 10101}}), '<html>refresh unavailable</html>']);
+  const response = await fetcher.get('items');
+  assert.equal(response.json.result.code, 10101);
+  assert.equal(fetch.mock.calls.length, 2);
+});
