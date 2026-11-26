@@ -46,3 +46,15 @@ test('late expired responses reuse the refresh that already completed', async t 
   assert.equal((await late).json.result.code, 0);
   assert.equal(s.refreshes, 1);
 });
+
+test('a refresh completing after an account switch cannot restore the old session', async t => {
+  const s = session(t);
+  const result = fetcher.get('one');
+  await new Promise(resolve => setImmediate(resolve));
+  s.values.set('token', 'other-account');
+  s.values.set('refreshToken', 'other-refresh');
+  s.release();
+  assert.equal((await result).json.result.code, 10101);
+  assert.equal(s.values.get('token'), 'other-account');
+  assert.equal(s.values.get('refreshToken'), 'other-refresh');
+});
