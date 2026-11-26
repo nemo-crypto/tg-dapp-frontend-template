@@ -24,3 +24,13 @@ test('both proxy routes preserve valid falsy RPC parameters', async t => {
   }
   assert.deepEqual(sent, [false, 0, '', false, 0, '']);
 });
+
+test('invalid authentication and unsupported methods never reach the upstream API', async t => {
+  const fetch = t.mock.method(globalThis, 'fetch', async () => {throw new Error('must not send');});
+  for (const route of routes) {
+    for (const input of [{path: 'x', method: 'POST', token: {}}, {path: 'x', method: 'TRACE'}, {path: ' ', method: 'GET'}]) {
+      assert.equal((await route.POST(request(JSON.stringify(input)))).status, 400);
+    }
+  }
+  assert.equal(fetch.mock.calls.length, 0);
+});
