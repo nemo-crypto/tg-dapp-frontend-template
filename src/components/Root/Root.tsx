@@ -62,16 +62,25 @@ function RootInner({ children }: PropsWithChildren) {
     return new URL("tonconnect-manifest.json", window.location.href).toString();
   }, []);
 
-  // Enable debug mode to see all the methods sent and events received.
+  // Load the optional console only for explicit debug launches.
   useEffect(() => {
-    if (debug) {
-      import("eruda").then((lib) => lib.default.init());
-    }
+    if (!debug) return;
+    let cancelled = false;
+    let consoleInstance: { destroy: () => void } | undefined;
+    import("eruda")
+      .then((lib) => {
+        if (cancelled) return;
+        lib.default.init();
+        consoleInstance = lib.default;
+      })
+      .catch(() => {
+        // An optional debugger failing to load must not break the app.
+      });
+    return () => {
+      cancelled = true;
+      consoleInstance?.destroy();
+    };
   }, [debug]);
-
-  useEffect(() => {
-    import("eruda").then((lib) => lib.default.init());
-  }, []);
 
   return (
     <NextUIProvider>
