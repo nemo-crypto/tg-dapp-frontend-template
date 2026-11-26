@@ -23,7 +23,8 @@ function getOptions(
   token: string,
 ) {
   const options: RequestInit = {
-    method: method.toUpperCase(),
+    // JSON-RPC 方法在请求体中，传输层统一使用支持请求体的 POST。
+    method: "POST",
     credentials: "include",
     mode: "cors",
     headers: {
