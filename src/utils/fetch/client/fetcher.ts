@@ -56,13 +56,13 @@ const fetcher = {
       res = await send("/api/service", options)
     }
     if (res.status == 200) {
-      if (res.json.result.code == 10101) {
+      if (res.json.result?.code == 10101) {
         const options = getOptions("POST", "user_refreshToken", {
           refreshToken: refreshTokenStr,
         })
         const resToken = await send("/api/service", options)
         if (resToken.status == 200) {
-          if (resToken.json.result.code == 0) {
+          if (resToken.json.result?.code == 0) {
             localStorage.setItem("token", resToken.json.result.data.token)
             localStorage.setItem(
               "refreshToken",
@@ -80,7 +80,7 @@ const fetcher = {
             )
             res = await send("/api/service", options)
           }
-          if (resToken.json.result.code == 10102) {
+          if (resToken.json.result?.code == 10102) {
             localStorage.removeItem("token")
             localStorage.removeItem("refreshToken")
             localStorage.removeItem("refreshTokenExpireAt")
@@ -133,8 +133,13 @@ async function send(
     const body = await res.text()
     if (body) {
       try {
-        ret.json = JSON.parse(body)
-        callback(res)
+        const parsed: unknown = JSON.parse(body)
+        if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+          ret.body = body
+        } else {
+          ret.json = parsed as ResponseData
+          callback(res)
+        }
       } catch (e) {
         ret.body = body
       }
