@@ -41,3 +41,18 @@ test('debug launches initialize once and destroy on cleanup', async () => {
   unmount();
   assert.equal(stops, 1);
 });
+
+test('a debugger import resolving after unmount cannot create a console', async () => {
+  let resolveImport, starts = 0;
+  const pending = new Promise(resolve => { resolveImport = resolve; });
+  const unmount = mount(true, () => pending);
+  unmount();
+  resolveImport({ default: { init() { starts++; }, destroy() {} } });
+  await flush();
+  assert.equal(starts, 0);
+});
+test('an unavailable optional debugger does not cause an unhandled rejection', async () => {
+  const unmount = mount(true, () => Promise.reject(new Error('chunk unavailable')));
+  await flush();
+  unmount();
+});
